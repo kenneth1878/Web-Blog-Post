@@ -1,0 +1,23 @@
+<%- include("reusable/header.ejs") %>
+
+<body>
+  <div class="form-con">
+    <form action="/submit" method="post">
+      <label for="title">Title</label>
+      <input type="text" name="title" placeholder="Enter blog title" required />
+
+      <label for="image">Image URL</label>
+      <input type="text" name="image" placeholder="Paste image link" />
+
+      <label for="description">Description</label>
+      <textarea
+        name="description"
+        placeholder="Write your blog description"
+        rows="4"
+        required
+      ></textarea>
+
+      <input type="submit" value="Create Blog" />
+    </form>
+  </div>
+</body>
