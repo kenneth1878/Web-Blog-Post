@@ -1,12 +1,17 @@
 import express from "express";
 import bodyParser from "body-parser";
 import fs, { existsSync } from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const port = 3000;
 const POST_file = "post.json";
 
-app.use(express.static("public"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
@@ -25,10 +30,14 @@ function writePost(posts){
     fs.writeFileSync(POST_file ,JSON.stringify(posts,null,2));
 }
 
-app.get('/',(req,res)=>{
-    const posts = readPost();
-    res.render("index.ejs", {posts});
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "static", "index.html"));
 });
+
+app.get("/home",(req,res)=>{
+    const posts = readPost();
+    res.render("index.ejs",{posts})
+})
 
 app.get('/blogs',(req,res)=>{
     const posts = readPost();
@@ -50,14 +59,14 @@ app.post('/submit',(req,res)=>{
     };
     posts.push(newPosts);
     writePost(posts);
-    res.redirect('/');
+    res.redirect('/home');
 });
 
 app.post("/delete/:index",(req,res)=>{
     const posts = readPost();
     posts.splice(req.params.index, 1);
     writePost(posts);
-    res.redirect("/")
+    res.redirect("/home")
 })
 
 app.use((req, res) => {
